@@ -74,18 +74,18 @@ using namespace std;
 //=============================================================================================================
 
 SsvepBci::SsvepBci()
-: m_qStringResourcePath(qApp->applicationDirPath()+"/mne_scan_plugins/resources/ssvepbci/")
-, m_bProcessData(false)
-, m_dAlpha(0.25)
-, m_iNumberOfHarmonics(2)
-, m_bUseMEC(true)
-, m_bRemovePowerLine(false)
-, m_iPowerLine(50)
-, m_bChangeSSVEPParameterFlag(false)
-, m_bInitializeSource(true)
-, m_iNumberOfClassHits(15)
-, m_iClassListSize(20)
-, m_iNumberOfClassBreaks(30)
+    : m_qStringResourcePath(qApp->applicationDirPath()+"/mne_scan_plugins/resources/ssvepbci/")
+    , m_bProcessData(false)
+    , m_dAlpha(0.25)
+    , m_iNumberOfHarmonics(2)
+    , m_bUseMEC(true)
+    , m_bRemovePowerLine(false)
+    , m_iPowerLine(50)
+    , m_bChangeSSVEPParameterFlag(false)
+    , m_bInitializeSource(true)
+    , m_iNumberOfClassHits(15)
+    , m_iClassListSize(20)
+    , m_iNumberOfClassBreaks(30)
 {
     // Create configuration action bar item/button
     m_pActionBCIConfiguration = new QAction(QIcon(":/images/configuration.png"),tr("BCI configuration feature"),this);
@@ -146,31 +146,31 @@ void SsvepBci::init()
     connect(m_pRTMSAInput.data(), &PluginInputConnector::notify, this, &SsvepBci::updateSensor, Qt::DirectConnection);
     m_inputConnectors.append(m_pRTMSAInput);
 
-//    // Output streams
-//    m_pBCIOutputOne = PluginOutputData<NewRealTimeSampleArray>::create(this, "ControlSignal", "BCI output data One");
-//    m_pBCIOutputOne->data()->setArraySize(1);
-//    m_pBCIOutputOne->data()->setName("Boundary");
-//    m_outputConnectors.append(m_pBCIOutputOne);
+    // Output streams
+    m_pBCIOutputOne = PluginOutputData<NewRealTimeSampleArray>::create(this, "Forward", "BCI output data One");
+    m_pBCIOutputOne->data()->setArraySize(1);
+    m_pBCIOutputOne->data()->setName("Forward");
+    m_outputConnectors.append(m_pBCIOutputOne);
 
-//    m_pBCIOutputTwo = PluginOutputData<NewRealTimeSampleArray>::create(this, "ControlSignal", "BCI output data Two");
-//    m_pBCIOutputTwo->data()->setArraySize(1);
-//    m_pBCIOutputTwo->data()->setName("Left electrode var");
-//    m_outputConnectors.append(m_pBCIOutputTwo);
+    m_pBCIOutputTwo = PluginOutputData<NewRealTimeSampleArray>::create(this, "Reverse", "BCI output data Two");
+    m_pBCIOutputTwo->data()->setArraySize(1);
+    m_pBCIOutputTwo->data()->setName("Reverse");
+    m_outputConnectors.append(m_pBCIOutputTwo);
 
-//    m_pBCIOutputThree = PluginOutputData<NewRealTimeSampleArray>::create(this, "ControlSignal", "BCI output data Three");
-//    m_pBCIOutputThree->data()->setArraySize(1);
-//    m_pBCIOutputThree->data()->setName("Right electrode var");
-//    m_outputConnectors.append(m_pBCIOutputThree);
+    m_pBCIOutputThree = PluginOutputData<NewRealTimeSampleArray>::create(this, "Left", "BCI output data Three");
+    m_pBCIOutputThree->data()->setArraySize(1);
+    m_pBCIOutputThree->data()->setName("Left");
+    m_outputConnectors.append(m_pBCIOutputThree);
 
-//    m_pBCIOutputFour = PluginOutputData<NewRealTimeSampleArray>::create(this, "ControlSignal", "BCI output data Four");
-//    m_pBCIOutputFour->data()->setArraySize(1);
-//    m_pBCIOutputFour->data()->setName("Left electrode");
-//    m_outputConnectors.append(m_pBCIOutputFour);
+    m_pBCIOutputFour = PluginOutputData<NewRealTimeSampleArray>::create(this, "Right", "BCI output data Four");
+    m_pBCIOutputFour->data()->setArraySize(1);
+    m_pBCIOutputFour->data()->setName("Right");
+    m_outputConnectors.append(m_pBCIOutputFour);
 
-//    m_pBCIOutputFive = PluginOutputData<NewRealTimeSampleArray>::create(this, "ControlSignal", "BCI output data Five");
-//    m_pBCIOutputFive->data()->setArraySize(1);
-//    m_pBCIOutputFive->data()->setName("Right electrode");
-//    m_outputConnectors.append(m_pBCIOutputFive);
+    m_pBCIOutputFive = PluginOutputData<NewRealTimeSampleArray>::create(this, "Stop", "BCI output data Five");
+    m_pBCIOutputFive->data()->setArraySize(1);
+    m_pBCIOutputFive->data()->setName("Stop");
+    m_outputConnectors.append(m_pBCIOutputFive);
 
     // Delete Buffer - will be initailzed with first incoming data
     m_pBCIBuffer_Sensor = CircularMatrixBuffer<double>::SPtr();
@@ -182,8 +182,8 @@ void SsvepBci::init()
     // Intitalise GUI stuff
     m_bUseSensorData = true;
 
-//    // Init BCIFeatureWindow for visualization
-//    m_BCIFeatureWindow = QSharedPointer<BCIFeatureWindow>(new BCIFeatureWindow(this));
+    //    // Init BCIFeatureWindow for visualization
+    //    m_BCIFeatureWindow = QSharedPointer<BCIFeatureWindow>(new BCIFeatureWindow(this));
 }
 
 
@@ -236,8 +236,8 @@ bool SsvepBci::stop()
     {
         m_pBCIBuffer_Sensor->releaseFromPop();
         m_pBCIBuffer_Sensor->releaseFromPush();
-//        m_pBCIBuffer_Source->releaseFromPop();
-//        m_pBCIBuffer_Source->releaseFromPush();
+        //        m_pBCIBuffer_Source->releaseFromPop();
+        //        m_pBCIBuffer_Source->releaseFromPush();
     }
 
     // Stop filling buffers with data from the inputs
@@ -298,7 +298,7 @@ void SsvepBci::updateSensor(SCMEASLIB::NewMeasurement::SPtr pMeasurement)
         m_pFiffInfo_Sensor = pRTMSA->info();
         //emit fiffInfoAvailable();
 
-//        QStringList chs = m_pFiffInfo_Sensor->ch_names;
+        //        QStringList chs = m_pFiffInfo_Sensor->ch_names;
 
         //calculating downsampling parameter for incoming data
         m_iDownSampleIncrement = m_pFiffInfo_Sensor->sfreq/100;
@@ -612,7 +612,7 @@ double SsvepBci::MEC(MatrixXd &Y, MatrixXd &X)
     MatrixXd Ytilde = Y - X*X_help.inverse()*X.transpose()*Y;
 
     // Find eigenvalues and eigenvectors
-    SelfAdjointEigenSolver<MatrixXd> eigensolver(Ytilde.transpose()*Ytilde);    
+    SelfAdjointEigenSolver<MatrixXd> eigensolver(Ytilde.transpose()*Ytilde);
 
     // Determine number of channels Ns
     int Ns;
@@ -628,7 +628,7 @@ double SsvepBci::MEC(MatrixXd &Y, MatrixXd &X)
     Ns += 1;
 
     // Determine spatial filter matrix W
-    MatrixXd W = eigensolver.eigenvectors().block(0, 0, eigensolver.eigenvectors().rows(), Ns);   
+    MatrixXd W = eigensolver.eigenvectors().block(0, 0, eigensolver.eigenvectors().rows(), Ns);
     for(int k = 0; k < Ns; k++){
         W.col(k) = W.col(k)*(1/sqrt(eigensolver.eigenvalues()(k)));
     }
@@ -771,7 +771,7 @@ void SsvepBci::ssvepBciOnSensor()
                 Y = Y - Zp*Zp_help.inverse()*Zp.transpose()*Y;
             }
 
-            qDebug() << "size of Matrix:" << Y.rows() << Y.cols();
+            //qDebug() << "size of Matrix:" << Y.rows() << Y.cols();
 
             // apply feature extraction for all frequencies of interest
             VectorXd ssvepProbabilities(m_lAllFrequencies.size());
@@ -840,12 +840,48 @@ void SsvepBci::ssvepBciOnSensor()
         for(int i = 1; (i <= m_lDesFrequencies.size()) && (!m_lIndexOfClassResultSensor.isEmpty() ); i++){
             if(m_lIndexOfClassResultSensor.count(i) >= m_iNumberOfClassHits){
                 emit classificationResult(m_lDesFrequencies[i - 1]);
+                if(i == 1) {
+                    m_pBCIOutputOne->data()->setValue(30000);
+                    m_pBCIOutputTwo->data()->setValue(0);
+                    m_pBCIOutputThree->data()->setValue(0);
+                    m_pBCIOutputFour->data()->setValue(0);
+                    m_pBCIOutputFive->data()->setValue(0);
+                } else if(i == 2) {
+                    m_pBCIOutputOne->data()->setValue(0);
+                    m_pBCIOutputTwo->data()->setValue(30000);
+                    m_pBCIOutputThree->data()->setValue(0);
+                    m_pBCIOutputFour->data()->setValue(0);
+                    m_pBCIOutputFive->data()->setValue(0);
+                } else if(i == 3) {
+                    m_pBCIOutputOne->data()->setValue(0);
+                    m_pBCIOutputTwo->data()->setValue(0);
+                    m_pBCIOutputThree->data()->setValue(30000);
+                    m_pBCIOutputFour->data()->setValue(0);
+                    m_pBCIOutputFive->data()->setValue(0);
+                } else if(i == 4) {
+                    m_pBCIOutputOne->data()->setValue(0);
+                    m_pBCIOutputTwo->data()->setValue(0);
+                    m_pBCIOutputThree->data()->setValue(0);
+                    m_pBCIOutputFour->data()->setValue(30000);
+                    m_pBCIOutputFive->data()->setValue(0);
+                } else if(i == 5) {
+                    m_pBCIOutputOne->data()->setValue(0);
+                    m_pBCIOutputTwo->data()->setValue(0);
+                    m_pBCIOutputThree->data()->setValue(0);
+                    m_pBCIOutputFour->data()->setValue(0);
+                    m_pBCIOutputFive->data()->setValue(30000);
+                }
                 m_lIndexOfClassResultSensor.clear();
                 m_iCounter = 0;
                 break;
             }
-            else{
-              emit classificationResult(0);
+            else {
+                m_pBCIOutputOne->data()->setValue(0);
+                m_pBCIOutputTwo->data()->setValue(0);
+                m_pBCIOutputThree->data()->setValue(0);
+                m_pBCIOutputFour->data()->setValue(0);
+                m_pBCIOutputFive->data()->setValue(0);
+                emit classificationResult(0);
             }
         }
     }
