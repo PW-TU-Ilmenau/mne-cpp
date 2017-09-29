@@ -59,11 +59,7 @@ using namespace IOBUFFER;
 
 robotorAMT::robotorAMT()
 : m_bIsRunning(false)
-, m_probotorAMTInputOne(NULL)
-, m_probotorAMTInputTwo(NULL)
-, m_probotorAMTInputThree(NULL)
-, m_probotorAMTInputFour(NULL)
-, m_probotorAMTInputFive(NULL)
+, m_probotorAMTInput(NULL)
 {
     //Add action which will be visible in the plugin's toolbar
     m_pActionShowYourWidget = new QAction(QIcon(":/images/options.png"), tr("Your Toolbar Widget"),this);
@@ -98,25 +94,9 @@ QSharedPointer<IPlugin> robotorAMT::clone() const
 void robotorAMT::init()
 {
     // Input
-    m_probotorAMTInputOne = PluginInputData<NewRealTimeSampleArray>::create(this, "Forward", "robotorAMT input data 1");
-    connect(m_probotorAMTInputOne.data(), &PluginInputConnector::notify, this, &robotorAMT::updateForward, Qt::DirectConnection);
-    m_inputConnectors.append(m_probotorAMTInputOne);
-
-    m_probotorAMTInputTwo = PluginInputData<NewRealTimeSampleArray>::create(this, "Reverse", "robotorAMT input data 2");
-    connect(m_probotorAMTInputTwo.data(), &PluginInputConnector::notify, this, &robotorAMT::updateReverse, Qt::DirectConnection);
-    m_inputConnectors.append(m_probotorAMTInputTwo);
-
-    m_probotorAMTInputThree = PluginInputData<NewRealTimeSampleArray>::create(this, "Left", "robotorAMT input data 3");
-    connect(m_probotorAMTInputTwo.data(), &PluginInputConnector::notify, this, &robotorAMT::updateLeft, Qt::DirectConnection);
-    m_inputConnectors.append(m_probotorAMTInputThree);
-
-    m_probotorAMTInputFour = PluginInputData<NewRealTimeSampleArray>::create(this, "Right", "robotorAMT input data 4");
-    connect(m_probotorAMTInputTwo.data(), &PluginInputConnector::notify, this, &robotorAMT::updateRight, Qt::DirectConnection);
-    m_inputConnectors.append(m_probotorAMTInputFour);
-
-    m_probotorAMTInputFive = PluginInputData<NewRealTimeSampleArray>::create(this, "Stop", "robotorAMT input data 5");
-    connect(m_probotorAMTInputTwo.data(), &PluginInputConnector::notify, this, &robotorAMT::updateStop, Qt::DirectConnection);
-    m_inputConnectors.append(m_probotorAMTInputFive);
+    m_probotorAMTInput = PluginInputData<NewRealTimeSampleArray>::create(this, "Input", "Input");
+    connect(m_probotorAMTInput.data(), &PluginInputConnector::notify, this, &robotorAMT::update, Qt::DirectConnection);
+    m_inputConnectors.append(m_probotorAMTInput);
 }
 
 
@@ -181,167 +161,76 @@ QWidget* robotorAMT::setupWidget()
 
 //*************************************************************************************************************
 
-void robotorAMT::updateForward(SCMEASLIB::NewMeasurement::SPtr pMeasurement)
+void robotorAMT::update(SCMEASLIB::NewMeasurement::SPtr pMeasurement)
 {
     QSharedPointer<NewRealTimeSampleArray> pRTSA = pMeasurement.dynamicCast<NewRealTimeSampleArray>();
 
     if(pRTSA) {
-        QString command = pRTSA->getName();
         QVector<double>  t_vec = pRTSA->getSampleArray();
-        int residual = t_vec.size() - t_vec.count(0.0);
-            for(int j = 0; j < residual; ++j) {
-                m_lCommands << command;
+        for(int j = 0; j < t_vec.size(); ++j) {
+            switch ((int)t_vec.at(j)) {
+            case 10000:
+                m_lCommands << "Forward";
+                break;
+            case 20000:
+                m_lCommands << "Reverse";
+                break;
+            case 30000:
+                m_lCommands << "Left";
+                break;
+            case 40000:
+                m_lCommands << "Right";
+                break;
+            case 50000:
+                m_lCommands << "Stop";
+                break;
+            default:
+                break;
             }
-        if(residual > 0){
-            qDebug()<<residual;
         }
-//        qDebug()<<m_lCommands;
-//        qDebug()<<command;
     }
 }
 
-//*************************************************************************************************************
-
-void robotorAMT::updateReverse(SCMEASLIB::NewMeasurement::SPtr pMeasurement)
-{
-    QSharedPointer<NewRealTimeSampleArray> pRTSA = pMeasurement.dynamicCast<NewRealTimeSampleArray>();
-
-    if(pRTSA) {
-        QString command = pRTSA->getName();
-        QVector<double>  t_vec = pRTSA->getSampleArray();
-        int residual = t_vec.size() - t_vec.count(0.0);
-            for(int j = 0; j < residual; ++j) {
-                m_lCommands << command;
-            }
-        if(residual > 0){
-            qDebug()<<residual;
-        }
-        qDebug()<<m_lCommands;
-        qDebug()<<command;
-    }
-    qDebug()<<m_lCommands;
-    qDebug()<<"Test";
-}
-
-//*************************************************************************************************************
-
-void robotorAMT::updateLeft(SCMEASLIB::NewMeasurement::SPtr pMeasurement)
-{
-    QSharedPointer<NewRealTimeSampleArray> pRTSA = pMeasurement.dynamicCast<NewRealTimeSampleArray>();
-
-    if(pRTSA) {
-        QString command = pRTSA->getName();
-        QVector<double>  t_vec = pRTSA->getSampleArray();
-        int residual = t_vec.size() - t_vec.count(0.0);
-            for(int j = 0; j < residual; ++j) {
-                m_lCommands << command;
-            }
-        if(residual > 0){
-            qDebug()<<residual;
-        }
-        qDebug()<<m_lCommands;
-        qDebug()<<command;
-    }
-}
-
-//*************************************************************************************************************
-
-void robotorAMT::updateRight(SCMEASLIB::NewMeasurement::SPtr pMeasurement)
-{
-    QSharedPointer<NewRealTimeSampleArray> pRTSA = pMeasurement.dynamicCast<NewRealTimeSampleArray>();
-
-    if(pRTSA) {
-        QString command = pRTSA->getName();
-        QVector<double>  t_vec = pRTSA->getSampleArray();
-        int residual = t_vec.size() - t_vec.count(0.0);
-            for(int j = 0; j < residual; ++j) {
-                m_lCommands << command;
-            }
-        if(residual > 0){
-            qDebug()<<residual;
-        }
-        qDebug()<<m_lCommands;
-        qDebug()<<command;
-    }
-}
-
-//*************************************************************************************************************
-
-void robotorAMT::updateStop(SCMEASLIB::NewMeasurement::SPtr pMeasurement)
-{
-    QSharedPointer<NewRealTimeSampleArray> pRTSA = pMeasurement.dynamicCast<NewRealTimeSampleArray>();
-
-    if(pRTSA) {
-        QString command = pRTSA->getName();
-        QVector<double>  t_vec = pRTSA->getSampleArray();
-        int residual = t_vec.size() - t_vec.count(0.0);
-            for(int j = 0; j < residual; ++j) {
-                m_lCommands << command;
-            }
-        if(residual > 0){
-            qDebug()<<residual;
-        }
-        qDebug()<<m_lCommands;
-        qDebug()<<command;
-    }
-}
 
 //*************************************************************************************************************
 
 void robotorAMT::run()
 {
-//    QFile commands;
-//    QString file_location, putty, file_name, amt_command;
-//    QProcess *process;
-//    QStringList file_names, file_content, arguments;
+    QString com;
 
-//    file_location = "C:/Users/ricky/Desktop/paul_wenzel";
-//    // file_location, path to the directory we are using
-//    putty = "C:/Users/ricky/Downloads/putty.exe";
-//    // path of the Putty.exe
+    while(m_bIsRunning)
+    {
+        if(!m_lCommands.isEmpty()) {
+            qDebug() << m_lCommands;
+            QString bci_input = m_lCommands.takeFirst();
 
-//    // creating the txt-files with the commands the Pi should receive
-//    file_names << "/AMT_forward.txt" << "/AMT_reverse.txt" << "/AMT_left.txt" << "/AMT_right.txt" << "/AMT_stop.txt";
-//    file_content << "sudo python Motor_fwd.py" << "sudo python Motor_reverse.py" << "sudo python Motor_left.py" << "sudo python Motor_right.py" << "sudo python Motor_stop.py";
+            if (bci_input == "Forward"){
+                com = "1";
+            } else if (bci_input == "Reverse"){
+                com = "2";
+            } else if (bci_input == "Left"){
+                com = "3";
+            } else if (bci_input == "Right"){
+                com = "4";
+            } else if (bci_input == "Stop"){
+                com = "5";
+            }
 
-//    for (int i = 0; i<5; i++){
-//        file_name = file_location+file_names[i];
-//        commands.setFileName(file_name);
-//        commands.open(QIODevice::WriteOnly | QIODevice::Text);
-//        QTextStream stream(&commands);
-//        stream << file_content[i];
-//        commands.close();
-//    }
+            qDebug() << com;
 
-//    while(m_bIsRunning)
-//    {
-//        if(!m_lCommands.isEmpty()) {
-//            qDebug() << m_lCommands;
-//            QString bci_input = m_lCommands.takeFirst();
+            QStringList amt_command;
+            amt_command << "BCItoPi_BCIClient.py " << com;
 
-//            if (bci_input == "Forward"){
-//                amt_command = file_location+file_names[0];
-//            } else if (bci_input == "Reverse"){
-//                amt_command = file_location+file_names[1];
-//            } else if (bci_input == "Left"){
-//                amt_command = file_location+file_names[2];
-//            } else if (bci_input == "Right"){
-//                amt_command = file_location+file_names[3];
-//            } else if (bci_input == "Stop"){
-//                amt_command = file_location+file_names[4];
-//            }
-//            // amt_command, the complete path to the txt-file we intend to send
+            qDebug() << amt_command;
 
-//            process = new QProcess();
-//            arguments << "-ssh" << "pi@192.168.1.1" << "22" << "-pw" << "r4spberry" << "-m" << amt_command;
-//            // -ssh: type of the connection
-//            // pi@... Username and Ip-Adress
-//            // Portnumber, we use 22 here
-//            // -pw: the following string will be passed as the password
-//            // -m: instead of a shell, putty will enter the content of the following txt-file into the command-console of the Pi
-//            process->startDetached(putty, arguments);
-//        }
-//    }
+            QString python = "C:/Users/ricky/AppData/Local/Programs/Python/Python36-32/python.exe";
+
+            QProcess process;
+            process.setWorkingDirectory("C:/Users/ricky/AppData/Local/Programs/Python/Python36-32");
+            process.start(python, amt_command);
+            process.waitForFinished(-1);
+        }
+    }
 }
 
 

@@ -147,30 +147,9 @@ void SsvepBci::init()
     m_inputConnectors.append(m_pRTMSAInput);
 
     // Output streams
-    m_pBCIOutputOne = PluginOutputData<NewRealTimeSampleArray>::create(this, "Forward", "BCI output data One");
+    m_pBCIOutputOne = PluginOutputData<NewRealTimeSampleArray>::create(this, "Control output", "BCI");
     m_pBCIOutputOne->data()->setArraySize(1);
-    m_pBCIOutputOne->data()->setName("Forward");
     m_outputConnectors.append(m_pBCIOutputOne);
-
-    m_pBCIOutputTwo = PluginOutputData<NewRealTimeSampleArray>::create(this, "Reverse", "BCI output data Two");
-    m_pBCIOutputTwo->data()->setArraySize(1);
-    m_pBCIOutputTwo->data()->setName("Reverse");
-    m_outputConnectors.append(m_pBCIOutputTwo);
-
-    m_pBCIOutputThree = PluginOutputData<NewRealTimeSampleArray>::create(this, "Left", "BCI output data Three");
-    m_pBCIOutputThree->data()->setArraySize(1);
-    m_pBCIOutputThree->data()->setName("Left");
-    m_outputConnectors.append(m_pBCIOutputThree);
-
-    m_pBCIOutputFour = PluginOutputData<NewRealTimeSampleArray>::create(this, "Right", "BCI output data Four");
-    m_pBCIOutputFour->data()->setArraySize(1);
-    m_pBCIOutputFour->data()->setName("Right");
-    m_outputConnectors.append(m_pBCIOutputFour);
-
-    m_pBCIOutputFive = PluginOutputData<NewRealTimeSampleArray>::create(this, "Stop", "BCI output data Five");
-    m_pBCIOutputFive->data()->setArraySize(1);
-    m_pBCIOutputFive->data()->setName("Stop");
-    m_outputConnectors.append(m_pBCIOutputFive);
 
     // Delete Buffer - will be initailzed with first incoming data
     m_pBCIBuffer_Sensor = CircularMatrixBuffer<double>::SPtr();
@@ -840,47 +819,13 @@ void SsvepBci::ssvepBciOnSensor()
         for(int i = 1; (i <= m_lDesFrequencies.size()) && (!m_lIndexOfClassResultSensor.isEmpty() ); i++){
             if(m_lIndexOfClassResultSensor.count(i) >= m_iNumberOfClassHits){
                 emit classificationResult(m_lDesFrequencies[i - 1]);
-                if(i == 1) {
-                    m_pBCIOutputOne->data()->setValue(30000);
-                    m_pBCIOutputTwo->data()->setValue(0);
-                    m_pBCIOutputThree->data()->setValue(0);
-                    m_pBCIOutputFour->data()->setValue(0);
-                    m_pBCIOutputFive->data()->setValue(0);
-                } else if(i == 2) {
-                    m_pBCIOutputOne->data()->setValue(0);
-                    m_pBCIOutputTwo->data()->setValue(30000);
-                    m_pBCIOutputThree->data()->setValue(0);
-                    m_pBCIOutputFour->data()->setValue(0);
-                    m_pBCIOutputFive->data()->setValue(0);
-                } else if(i == 3) {
-                    m_pBCIOutputOne->data()->setValue(0);
-                    m_pBCIOutputTwo->data()->setValue(0);
-                    m_pBCIOutputThree->data()->setValue(30000);
-                    m_pBCIOutputFour->data()->setValue(0);
-                    m_pBCIOutputFive->data()->setValue(0);
-                } else if(i == 4) {
-                    m_pBCIOutputOne->data()->setValue(0);
-                    m_pBCIOutputTwo->data()->setValue(0);
-                    m_pBCIOutputThree->data()->setValue(0);
-                    m_pBCIOutputFour->data()->setValue(30000);
-                    m_pBCIOutputFive->data()->setValue(0);
-                } else if(i == 5) {
-                    m_pBCIOutputOne->data()->setValue(0);
-                    m_pBCIOutputTwo->data()->setValue(0);
-                    m_pBCIOutputThree->data()->setValue(0);
-                    m_pBCIOutputFour->data()->setValue(0);
-                    m_pBCIOutputFive->data()->setValue(30000);
-                }
+                m_pBCIOutputOne->data()->setValue(i*10000);
                 m_lIndexOfClassResultSensor.clear();
                 m_iCounter = 0;
                 break;
             }
             else {
                 m_pBCIOutputOne->data()->setValue(0);
-                m_pBCIOutputTwo->data()->setValue(0);
-                m_pBCIOutputThree->data()->setValue(0);
-                m_pBCIOutputFour->data()->setValue(0);
-                m_pBCIOutputFive->data()->setValue(0);
                 emit classificationResult(0);
             }
         }

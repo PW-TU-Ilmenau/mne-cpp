@@ -456,10 +456,6 @@ private:
 
     // output
     SCSHAREDLIB::PluginOutputData<SCMEASLIB::NewRealTimeSampleArray>::SPtr      m_pBCIOutputOne;        /**< The first RealTimeSampleArray of the BCI output.*/
-    SCSHAREDLIB::PluginOutputData<SCMEASLIB::NewRealTimeSampleArray>::SPtr      m_pBCIOutputTwo;        /**< The second RealTimeSampleArray of the BCI output.*/
-    SCSHAREDLIB::PluginOutputData<SCMEASLIB::NewRealTimeSampleArray>::SPtr      m_pBCIOutputThree;      /**< The third RealTimeSampleArray of the BCI output.*/
-    SCSHAREDLIB::PluginOutputData<SCMEASLIB::NewRealTimeSampleArray>::SPtr      m_pBCIOutputFour;       /**< The fourth RealTimeSampleArray of the BCI output.*/
-    SCSHAREDLIB::PluginOutputData<SCMEASLIB::NewRealTimeSampleArray>::SPtr      m_pBCIOutputFive;       /**< The fifth RealTimeSampleArray of the BCI output.*/
 
 };
 

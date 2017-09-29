@@ -133,16 +133,6 @@ public:
     */
     void update(SCMEASLIB::NewMeasurement::SPtr pMeasurement);
 
-    //=========================================================================================================
-    /**
-    * Updates the plugin with (incoming) data from the respective input
-    */
-    void updateForward(SCMEASLIB::NewMeasurement::SPtr pMeasurement);
-    void updateReverse(SCMEASLIB::NewMeasurement::SPtr pMeasurement);
-    void updateLeft(SCMEASLIB::NewMeasurement::SPtr pMeasurement);
-    void updateRight(SCMEASLIB::NewMeasurement::SPtr pMeasurement);
-    void updateStop(SCMEASLIB::NewMeasurement::SPtr pMeasurement);
-
 protected:
     //=========================================================================================================
     /**
@@ -159,11 +149,7 @@ private:
 
     QStringList m_lCommands;
 
-    SCSHAREDLIB::PluginInputData<SCMEASLIB::NewRealTimeSampleArray>::SPtr      m_probotorAMTInputOne;        /**< The first RealTimeSampleArray of the BCI output.*/
-    SCSHAREDLIB::PluginInputData<SCMEASLIB::NewRealTimeSampleArray>::SPtr      m_probotorAMTInputTwo;        /**< The second RealTimeSampleArray of the BCI output.*/
-    SCSHAREDLIB::PluginInputData<SCMEASLIB::NewRealTimeSampleArray>::SPtr      m_probotorAMTInputThree;      /**< The third RealTimeSampleArray of the BCI output.*/
-    SCSHAREDLIB::PluginInputData<SCMEASLIB::NewRealTimeSampleArray>::SPtr      m_probotorAMTInputFour;       /**< The fourth RealTimeSampleArray of the BCI output.*/
-    SCSHAREDLIB::PluginInputData<SCMEASLIB::NewRealTimeSampleArray>::SPtr      m_probotorAMTInputFive;       /**< The fifth RealTimeSampleArray of the BCI output.*/
+    SCSHAREDLIB::PluginInputData<SCMEASLIB::NewRealTimeSampleArray>::SPtr      m_probotorAMTInput;        /**< The first RealTimeSampleArray of the BCI output.*/
 
 signals:
     //=========================================================================================================
