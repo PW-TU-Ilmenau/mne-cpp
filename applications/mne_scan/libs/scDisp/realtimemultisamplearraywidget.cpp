@@ -308,61 +308,61 @@ void RealTimeMultiSampleArrayWidget::update(SCMEASLIB::NewMeasurement::SPtr)
             data.row(i).array() -= mean;
         }
 
-        //Add EEG data to interpolation
-        if(!m_pRtEEGSensorDataItem && m_slAvailableModalities.contains("EEG")) {
-            m_pRtEEGSensorDataItem = m_pData3DModel->addSensorData("Subject",
-                                                                "Online Measurement",
-                                                                data,
-                                                                (*m_pBemHead.data())[0],
-                                                                *m_pFiffInfo.data(),
-                                                                "EEG",
-                                                                0.05,
-                                                                "Cubic");
+//        //Add EEG data to interpolation
+//        if(!m_pRtEEGSensorDataItem && m_slAvailableModalities.contains("EEG")) {
+//            m_pRtEEGSensorDataItem = m_pData3DModel->addSensorData("Subject",
+//                                                                "Online Measurement",
+//                                                                data,
+//                                                                (*m_pBemHead.data())[0],
+//                                                                *m_pFiffInfo.data(),
+//                                                                "EEG",
+//                                                                0.05,
+//                                                                "Cubic");
 
-            if(m_pRtEEGSensorDataItem) {
-                m_pRtEEGSensorDataItem->setLoopState(false);
-                m_pRtEEGSensorDataItem->setTimeInterval(17); // 1sec/60Hz = 17 -> maximum display rate
-                m_pRtEEGSensorDataItem->setNumberAverages(m_pFiffInfo->sfreq/30); // 30 changes per seconds 30Hz on a display is enough for visualization
-                m_pRtEEGSensorDataItem->setStreamingActive(true);
-                m_pRtEEGSensorDataItem->setNormalization(QVector3D(0.0, 6e-6/2, 6e-6));
-                m_pRtEEGSensorDataItem->setColortable("Jet");
-                m_pRtEEGSensorDataItem->setSFreq(m_pRTMSA->info()->sfreq);
-            }
+//            if(m_pRtEEGSensorDataItem) {
+//                m_pRtEEGSensorDataItem->setLoopState(false);
+//                m_pRtEEGSensorDataItem->setTimeInterval(17); // 1sec/60Hz = 17 -> maximum display rate
+//                m_pRtEEGSensorDataItem->setNumberAverages(m_pFiffInfo->sfreq/30); // 30 changes per seconds 30Hz on a display is enough for visualization
+//                m_pRtEEGSensorDataItem->setStreamingActive(true);
+//                m_pRtEEGSensorDataItem->setNormalization(QVector3D(0.0, 6e-6/2, 6e-6));
+//                m_pRtEEGSensorDataItem->setColortable("Jet");
+//                m_pRtEEGSensorDataItem->setSFreq(m_pRTMSA->info()->sfreq);
+//            }
 
-            for(int i = 1; i < m_pRTMSA->getMultiSampleArray().size(); ++i) {
-                m_pRtEEGSensorDataItem->addData(m_pRTMSA->getMultiSampleArray().at(i));
-            }
-        } else if (m_pRtEEGSensorDataItem && m_slAvailableModalities.contains("EEG"))  {
-            m_pRtEEGSensorDataItem->addData(data);
-        }
+//            for(int i = 1; i < m_pRTMSA->getMultiSampleArray().size(); ++i) {
+//                m_pRtEEGSensorDataItem->addData(m_pRTMSA->getMultiSampleArray().at(i));
+//            }
+//        } else if (m_pRtEEGSensorDataItem && m_slAvailableModalities.contains("EEG"))  {
+//            m_pRtEEGSensorDataItem->addData(data);
+//        }
 
-        //Add MEG data to interpolation
-        if(!m_pRtMEGSensorDataItem && m_slAvailableModalities.contains("MEG")) {
-            m_pRtMEGSensorDataItem = m_pData3DModel->addSensorData("Subject",
-                                                                "Online Measurement",
-                                                                data,
-                                                                (*m_pBemSensor.data())[0],
-                                                                *m_pFiffInfo.data(),
-                                                                "MEG",
-                                                                0.05,
-                                                                "Cubic");
+//        //Add MEG data to interpolation
+//        if(!m_pRtMEGSensorDataItem && m_slAvailableModalities.contains("MEG")) {
+//            m_pRtMEGSensorDataItem = m_pData3DModel->addSensorData("Subject",
+//                                                                "Online Measurement",
+//                                                                data,
+//                                                                (*m_pBemSensor.data())[0],
+//                                                                *m_pFiffInfo.data(),
+//                                                                "MEG",
+//                                                                0.05,
+//                                                                "Cubic");
 
-            if(m_pRtMEGSensorDataItem) {
-                m_pRtMEGSensorDataItem->setLoopState(false);
-                m_pRtMEGSensorDataItem->setTimeInterval(17); // 1sec/60Hz = 17 -> maximum display rate
-                m_pRtMEGSensorDataItem->setNumberAverages(m_pFiffInfo->sfreq/30); // 30 changes per seconds 30Hz on a display is enough for visualization
-                m_pRtMEGSensorDataItem->setStreamingActive(true);
-                m_pRtMEGSensorDataItem->setNormalization(QVector3D(0.0, 3e-12/2, 3e-12));
-                m_pRtMEGSensorDataItem->setColortable("Jet");
-                m_pRtMEGSensorDataItem->setSFreq(m_pRTMSA->info()->sfreq);
-            }
+//            if(m_pRtMEGSensorDataItem) {
+//                m_pRtMEGSensorDataItem->setLoopState(false);
+//                m_pRtMEGSensorDataItem->setTimeInterval(17); // 1sec/60Hz = 17 -> maximum display rate
+//                m_pRtMEGSensorDataItem->setNumberAverages(m_pFiffInfo->sfreq/30); // 30 changes per seconds 30Hz on a display is enough for visualization
+//                m_pRtMEGSensorDataItem->setStreamingActive(true);
+//                m_pRtMEGSensorDataItem->setNormalization(QVector3D(0.0, 3e-12/2, 3e-12));
+//                m_pRtMEGSensorDataItem->setColortable("Jet");
+//                m_pRtMEGSensorDataItem->setSFreq(m_pRTMSA->info()->sfreq);
+//            }
 
-            for(int i = 1; i < m_pRTMSA->getMultiSampleArray().size(); ++i) {
-                m_pRtMEGSensorDataItem->addData(m_pRTMSA->getMultiSampleArray().at(i));
-            }
-        } else if (m_pRtMEGSensorDataItem && m_slAvailableModalities.contains("MEG")) {
-            m_pRtMEGSensorDataItem->addData(data);
-        }
+//            for(int i = 1; i < m_pRTMSA->getMultiSampleArray().size(); ++i) {
+//                m_pRtMEGSensorDataItem->addData(m_pRTMSA->getMultiSampleArray().at(i));
+//            }
+//        } else if (m_pRtMEGSensorDataItem && m_slAvailableModalities.contains("MEG")) {
+//            m_pRtMEGSensorDataItem->addData(data);
+//        }
     }
 }
 

@@ -173,13 +173,13 @@ void robotorAMT::update(SCMEASLIB::NewMeasurement::SPtr pMeasurement)
                 m_lCommands << "Forward";
                 break;
             case 20000:
-                m_lCommands << "Reverse";
+                m_lCommands << "Right";
                 break;
             case 30000:
-                m_lCommands << "Left";
+                m_lCommands << "Reverse";
                 break;
             case 40000:
-                m_lCommands << "Right";
+                m_lCommands << "Left";
                 break;
             case 50000:
                 m_lCommands << "Stop";
